@@ -1,9 +1,12 @@
+require('dotenv').config();
+
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
+require('./app_server/models/db');
 const indexRouter = require('./app_server/routes/index');
 
 var app = express();

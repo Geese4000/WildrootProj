@@ -6,15 +6,17 @@ block content
       .col-md-6.col-md-offset-3
         h1 Create your druid archive
         p.text-muted Every form, one archive.
-        form(method='GET', action='/login')
+        if error
+          .alert.alert-danger= error
+        form(method='POST', action='/register')
           .form-group
             label(for='username') Username
-            input#username.form-control(type='text', name='username', value=demoUser.username)
+            input#username.form-control(type='text', name='username', required)
           .form-group
             label(for='email') Email
-            input#email.form-control(type='email', name='email', value=demoUser.email)
+            input#email.form-control(type='email', name='email', required)
           .form-group
             label(for='password') Password
-            input#password.form-control(type='password', name='password', value=demoUser.password)
+            input#password.form-control(type='password', name='password', required)
           button.btn.btn-primary(type='submit') Create archive
           p.text-center.top-spacer Already in the circle? #[a(href='/login') Log in]
