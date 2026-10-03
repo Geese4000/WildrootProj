@@ -1,21 +1,56 @@
 extends layout
 
 block content
-  .container
-    .page-header
-      h1 Wild Shape Archive
-    .row
-      each ws in wildShapes
-        .col-md-4
-          .panel.panel-default
-            .panel-heading
-              strong= ws.name
-            .panel-body
-              p.text-muted= ws.creatureType
-              p
-                strong= 'AC ' + ws.armorClass
-                |  ·
-                strong= ' HP ' + ws.hitPoints
-              p
-                each tag in ws.tags
-                  span.label.label-success(style='margin-right:4px')= tag
+  .wr-shell
+    nav.wr-topnav
+      .wr-topnav-left
+        .wr-brand
+          .wr-brand-mark.wr-brand-mark--sm
+            svg(viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round')
+              path(d='M4 20c0-8 4-15 15-16-1 11-8 15-15 16z')
+              path(d='M6 18c3-4 6-7 10-12')
+          .wr-brand-name
+            span.wr-name Wildroot
+            span.wr-tagline Druid companion
+        .wr-nav
+          a.wr-nav-item(href='/archive') Archive
+          a.wr-nav-item.active(href='/archive/new')
+            span.dot
+            | Add Wild Shape
+      .wr-profile
+        .wr-avatar= profileInitials
+        .wr-identity
+          div.name= profileName
+          div.sub= profileEmail
+        a.wr-logout(href='/logout') Log out
+    .wr-content
+      .wr-heading
+        p.wr-eyebrow Creature database
+        h1 Wild Shape Archive
+      .wr-tools
+        .wr-filters
+          span.wr-filter.active= 'All forms · ' + wildShapes.length
+          span.wr-filter(aria-disabled='true', title='Filtering is not implemented yet') Favorites
+          span.wr-filter(aria-disabled='true', title='Filtering is not implemented yet') Aquatic
+          span.wr-filter(aria-disabled='true', title='Filtering is not implemented yet') Flying
+          span.wr-filter(aria-disabled='true', title='Filtering is not implemented yet') CR 1 or lower
+        a.wr-btn(href='/archive/new') + Add Wild Shape
+      if wildShapes.length
+        .wr-grid
+          each ws in wildShapes
+            .wr-card
+              h2= ws.name
+              p.wr-type= ws.size + ' ' + ws.creatureType + (ws.tags && ws.tags.length ? ' · ' + ws.tags.join(', ') : '')
+              .wr-stats
+                span= 'AC ' + ws.armorClass
+                span= 'HP ' + ws.hitPoints
+                span= 'Speed ' + ws.speed
+                span= 'CR ' + ws.challengeRating
+                span.sheet-link(title='Creature sheet detail is not implemented yet') Open sheet →
+        .wr-footer
+          span= 'Showing ' + wildShapes.length + ' of ' + wildShapes.length + ' creature records'
+          span.sync Synced live from MongoDB
+      else
+        .wr-empty
+          p No Wild Shapes saved to your archive yet.
+          a.wr-btn(href='/archive/new') + Add your first Wild Shape

@@ -1,22 +1,38 @@
 extends layout
 
 block content
-  .container
-    .row
-      .col-md-6.col-md-offset-3
-        h1 Create your druid archive
-        p.text-muted Every form, one archive.
+  .wr-auth.wr-auth--wide
+    .wr-auth-side
+      .wr-forest-ring
+      .wr-brand
+        .wr-brand-mark
+          svg(viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round')
+            path(d='M4 20c0-8 4-15 15-16-1 11-8 15-15 16z')
+            path(d='M6 18c3-4 6-7 10-12')
+        .wr-brand-name
+          span.wr-name Wildroot
+          span.wr-tagline Druid companion
+      .wr-welcome
+        p.wr-eyebrow Begin your circle
+        h1 Every form. One archive.
+        p Build a private library of Wild Shapes, creature sheets, and field notes for every adventure.
+      p.wr-privacy-note Built for your MEAN-powered campaign companion
+    .wr-auth-main
+      .wr-panel
+        div
+          h1 Create your druid archive
+          p.wr-panel-sub Your next transformation begins here.
         if error
-          .alert.alert-danger= error
-        form(method='POST', action='/register')
-          .form-group
+          p.wr-alert= error
+        form.wr-form(method='POST', action='/register')
+          .wr-field
             label(for='username') Username
-            input#username.form-control(type='text', name='username', required)
-          .form-group
+            input#username(type='text', name='username', required)
+          .wr-field
             label(for='email') Email
-            input#email.form-control(type='email', name='email', required)
-          .form-group
+            input#email(type='email', name='email', required)
+          .wr-field
             label(for='password') Password
-            input#password.form-control(type='password', name='password', required)
-          button.btn.btn-primary(type='submit') Create archive
-          p.text-center.top-spacer Already in the circle? #[a(href='/login') Log in]
+            input#password(type='password', name='password', required)
+          button.wr-btn(type='submit') Create archive
+        p.wr-switch Already in the circle? #[a(href='/login') Log in]

@@ -1,19 +1,37 @@
 extends layout
 
 block content
-  .container
-    .row
-      .col-md-6.col-md-offset-3
-        h1 Welcome back
-        p.text-muted Your Wild Shapes are waiting beneath the canopy.
+  .wr-auth
+    .wr-auth-side
+      .wr-brand
+        .wr-brand-mark
+          svg(viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round')
+            path(d='M4 20c0-8 4-15 15-16-1 11-8 15-15 16z')
+            path(d='M6 18c3-4 6-7 10-12')
+        .wr-brand-name
+          span.wr-name Wildroot
+          span.wr-tagline Druid companion
+      .wr-grove
+        svg(viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round')
+          path(d='M15.5 4.5a7.5 7.5 0 1 0 6 8.9 6 6 0 0 1-6-8.9z')
+          path(d='M19 3v4M17 5h4')
+        h1 Welcome back.
+        p Your forms, notes, and creature sheets are waiting beneath the canopy.
+      p.wr-privacy-note Private by default · MongoDB backed
+    .wr-auth-main
+      .wr-panel
+        div
+          p.wr-eyebrow Welcome back
+          h1 Enter your archive
         if error
-          .alert.alert-danger= error
-        form(method='POST', action='/login')
-          .form-group
+          p.wr-alert= error
+        form.wr-form(method='POST', action='/login')
+          .wr-field
             label(for='email') Email
-            input#email.form-control(type='email', name='email', required)
-          .form-group
+            input#email(type='email', name='email', required)
+          .wr-field
             label(for='password') Password
-            input#password.form-control(type='password', name='password', required)
-          button.btn.btn-primary(type='submit') Log in
-          p.text-center.top-spacer New to Wildroot? #[a(href='/register') Create an account]
+            input#password(type='password', name='password', required)
+          span.wr-forgot(title='Password reset is not implemented yet') Forgot password?
+          button.wr-btn(type='submit') Enter archive
+        p.wr-switch New to Wildroot? #[a(href='/register') Create an account]
