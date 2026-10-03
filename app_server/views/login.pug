@@ -1,0 +1,17 @@
+extends layout
+
+block content
+  .container
+    .row
+      .col-md-6.col-md-offset-3
+        h1 Welcome back
+        p.text-muted Your Wild Shapes are waiting beneath the canopy.
+        form(method='GET', action='/archive')
+          .form-group
+            label(for='email') Email
+            input#email.form-control(type='email', name='email', value=demoUser.email)
+          .form-group
+            label(for='password') Password
+            input#password.form-control(type='password', name='password', value=demoUser.password)
+          button.btn.btn-primary(type='submit') Log in
+          p.text-center.top-spacer New to Wildroot? #[a(href='/register') Create an account]

@@ -1,0 +1,21 @@
+extends layout
+
+block content
+  .container
+    .page-header
+      h1 Wild Shape Archive
+    .row
+      each ws in wildShapes
+        .col-md-4
+          .panel.panel-default
+            .panel-heading
+              strong= ws.name
+            .panel-body
+              p.text-muted= ws.creatureType
+              p
+                strong= 'AC ' + ws.armorClass
+                |  ·
+                strong= ' HP ' + ws.hitPoints
+              p
+                each tag in ws.tags
+                  span.label.label-success(style='margin-right:4px')= tag
