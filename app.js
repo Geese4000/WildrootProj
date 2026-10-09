@@ -5,6 +5,7 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var session = require('express-session');
 
 require('./app_server/models/db');
 const indexRouter = require('./app_server/routes/index');
@@ -20,6 +21,17 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Lightweight session so the archive can be scoped to the logged-in user.
+// This is a plain cookie session, not Passport — Report 3 is where auth
+// gets refactored onto Passport.js; this just gives /archive something to
+// filter on in the meantime.
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'wildroot-dev-secret-change-me',
+  resave: false,
+  saveUninitialized: false,
+  cookie: { maxAge: 1000 * 60 * 60 * 24 } // 1 day
+}));
 
 app.use('/', indexRouter);
 

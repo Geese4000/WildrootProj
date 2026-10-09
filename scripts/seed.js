@@ -16,34 +16,46 @@ const demoUser = {
 const wildShapes = [
   {
     name: 'Dire Wolf',
-    creatureType: 'Large beast',
+    size: 'Large',
+    creatureType: 'beast',
     armorClass: 14,
     hitPoints: 37,
-    tags: ['pack tactics', 'keen hearing']
+    speed: '50 ft.',
+    challengeRating: '1',
+    tags: ['Pack tactics', 'Keen hearing']
   },
   {
     name: 'Giant Eagle',
-    creatureType: 'Large beast',
+    size: 'Large',
+    creatureType: 'beast',
     armorClass: 13,
     hitPoints: 26,
-    tags: ['flying']
+    speed: '10 ft., fly 80 ft.',
+    challengeRating: '1',
+    tags: ['Keen sight', 'Flying']
   },
   {
     name: 'Brown Bear',
-    creatureType: 'Large beast',
+    size: 'Large',
+    creatureType: 'beast',
     armorClass: 11,
     hitPoints: 34,
-    tags: ['multiattack']
+    speed: '40 ft., climb 30 ft.',
+    challengeRating: '1',
+    tags: ['Keen smell', 'Multiattack']
   }
 ];
 
 async function seed() {
   await mongoose.connection.asPromise();
+  // Wipes ALL wild shapes, not just the demo user's — this is a dev reset
+  // script, not a migration. Re-run it any time you want a clean slate.
   await User.deleteMany({ email: demoUser.email });
   await WildShape.deleteMany({});
-  await User.create(demoUser);
-  await WildShape.insertMany(wildShapes);
-  console.log('Seeded demo user + wild shapes.');
+  const user = await User.create(demoUser);
+  const owned = wildShapes.map((ws) => ({ ...ws, owner: user._id }));
+  await WildShape.insertMany(owned);
+  console.log('Seeded demo user + wild shapes (owned by ' + user.email + ').');
   await mongoose.connection.close();
 }
 

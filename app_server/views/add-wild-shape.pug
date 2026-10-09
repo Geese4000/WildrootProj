@@ -1,0 +1,59 @@
+extends layout
+
+block content
+  .wr-shell
+    nav.wr-topnav
+      .wr-topnav-left
+        .wr-brand
+          .wr-brand-mark.wr-brand-mark--sm
+            svg(viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round')
+              path(d='M4 20c0-8 4-15 15-16-1 11-8 15-15 16z')
+              path(d='M6 18c3-4 6-7 10-12')
+          .wr-brand-name
+            span.wr-name Wildroot
+            span.wr-tagline Druid companion
+        .wr-nav
+          a.wr-nav-item(href='/archive') Archive
+          a.wr-nav-item.active(href='/archive/new')
+            span.dot
+            | Add Wild Shape
+      .wr-profile
+        .wr-avatar= profileInitials
+        .wr-identity
+          div.name= profileName
+          div.sub= profileEmail
+        a.wr-logout(href='/logout') Log out
+    .wr-content.wr-content--centered
+      .wr-panel.wr-panel--form
+        div
+          p.wr-eyebrow New entry
+          h1 Add a Wild Shape
+        if error
+          p.wr-alert= error
+        form.wr-form(method='POST', action='/archive')
+          .wr-field
+            label(for='name') Name
+            input#name(type='text', name='name', required)
+          .wr-field
+            label(for='size') Size
+            input#size(type='text', name='size', placeholder='Large', required)
+          .wr-field
+            label(for='creatureType') Type
+            input#creatureType(type='text', name='creatureType', placeholder='beast', required)
+          .wr-field
+            label(for='armorClass') Armor Class
+            input#armorClass(type='number', name='armorClass', min='0', required)
+          .wr-field
+            label(for='hitPoints') Hit Points
+            input#hitPoints(type='number', name='hitPoints', min='0', required)
+          .wr-field
+            label(for='speed') Speed
+            input#speed(type='text', name='speed', placeholder='40 ft., swim 40 ft.', required)
+          .wr-field
+            label(for='challengeRating') Challenge Rating
+            input#challengeRating(type='text', name='challengeRating', placeholder='1', required)
+          .wr-field
+            label(for='tags') Traits
+            input#tags(type='text', name='tags', placeholder='Pack tactics, Keen hearing (comma-separated)')
+          button.wr-btn(type='submit') Save to archive
+        p.wr-switch #[a(href='/archive') ← Back to archive]
