@@ -17,6 +17,27 @@ function profileLocals(req) {
   };
 }
 
+// "Pack Tactics: Has advantage on an attack roll ..." (one trait/action per
+// textarea line) -> [{ name: 'Pack Tactics', description: 'Has advantage...' }]
+function parseNamedEntries(text) {
+  if (!text) return [];
+  return text
+    .split('\n')
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .map((line) => {
+      const i = line.indexOf(':');
+      if (i === -1) return { name: line, description: '' };
+      return { name: line.slice(0, i).trim(), description: line.slice(i + 1).trim() };
+    });
+}
+
+// "Dex +4, Con +5" -> ["Dex +4", "Con +5"]
+function parseList(text) {
+  if (!text) return [];
+  return text.split(',').map((s) => s.trim()).filter(Boolean);
+}
+
 const login = function(req, res) {
   if (req.session.userId) return res.redirect('/archive');
   res.render('login', { title: 'Log in — Wildroot' });
@@ -89,16 +110,46 @@ const newWildShape = function(req, res) {
 const postWildShape = async function(req, res) {
   if (!req.session.userId) return res.redirect('/login');
   try {
-    const { name, size, creatureType, armorClass, hitPoints, speed, challengeRating, tags } = req.body;
+    const b = req.body;
     await WildShape.create({
-      name,
-      size,
-      creatureType,
-      armorClass: Number(armorClass),
-      hitPoints: Number(hitPoints),
-      speed,
-      challengeRating,
-      tags: tags ? tags.split(',').map((t) => t.trim()).filter(Boolean) : [],
+      name: b.name,
+      size: b.size,
+      creatureType: b.creatureType,
+      alignment: b.alignment || undefined,
+
+      armorClass: Number(b.armorClass),
+      armorClassNote: b.armorClassNote || undefined,
+      hitPoints: Number(b.hitPoints),
+      hitDice: b.hitDice || undefined,
+      speed: b.speed,
+
+      abilities: {
+        str: Number(b.str),
+        dex: Number(b.dex),
+        con: Number(b.con),
+        int: Number(b.int),
+        wis: Number(b.wis),
+        cha: Number(b.cha)
+      },
+
+      savingThrows: parseList(b.savingThrows),
+      skills: parseList(b.skills),
+
+      damageVulnerabilities: parseList(b.damageVulnerabilities),
+      damageResistances: parseList(b.damageResistances),
+      damageImmunities: parseList(b.damageImmunities),
+      conditionImmunities: parseList(b.conditionImmunities),
+
+      senses: b.senses || undefined,
+      languages: b.languages || undefined,
+
+      challengeRating: b.challengeRating,
+      xp: b.xp ? Number(b.xp) : undefined,
+
+      traits: parseNamedEntries(b.traits),
+      actions: parseNamedEntries(b.actions),
+
+      tags: parseList(b.tags),
       owner: req.session.userId
     });
     res.redirect('/archive');
