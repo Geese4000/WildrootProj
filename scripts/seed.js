@@ -18,30 +18,76 @@ const wildShapes = [
     name: 'Dire Wolf',
     size: 'Large',
     creatureType: 'beast',
+    alignment: 'unaligned',
     armorClass: 14,
+    armorClassNote: 'natural armor',
     hitPoints: 37,
+    hitDice: '5d10 + 10',
     speed: '50 ft.',
+    abilities: { str: 17, dex: 15, con: 15, int: 3, wis: 12, cha: 7 },
+    skills: ['Perception +3', 'Stealth +4'],
+    senses: 'passive Perception 13',
+    languages: '—',
     challengeRating: '1',
+    xp: 200,
+    traits: [
+      { name: 'Keen Hearing and Smell', description: 'The wolf has advantage on Wisdom (Perception) checks that rely on hearing or smell.' },
+      { name: 'Pack Tactics', description: "The wolf has advantage on an attack roll against a creature if at least one of the wolf's allies is within 5 feet of the creature and the ally isn't incapacitated." }
+    ],
+    actions: [
+      { name: 'Bite', description: 'Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 10 (2d6 + 3) piercing damage. If the target is a creature, it must succeed on a DC 13 Strength saving throw or be knocked prone.' }
+    ],
     tags: ['Pack tactics', 'Keen hearing']
   },
   {
     name: 'Giant Eagle',
     size: 'Large',
     creatureType: 'beast',
+    alignment: 'neutral good',
     armorClass: 13,
     hitPoints: 26,
+    hitDice: '4d10 + 4',
     speed: '10 ft., fly 80 ft.',
+    abilities: { str: 16, dex: 17, con: 13, int: 8, wis: 14, cha: 10 },
+    skills: ['Perception +6'],
+    senses: 'passive Perception 16',
+    languages: 'Giant Eagle, understands Common and Auran but can’t speak them',
     challengeRating: '1',
+    xp: 200,
+    traits: [
+      { name: 'Keen Sight', description: 'The eagle has advantage on Wisdom (Perception) checks that rely on sight.' }
+    ],
+    actions: [
+      { name: 'Multiattack', description: 'The eagle makes two attacks: one with its beak and one with its talons.' },
+      { name: 'Beak', description: 'Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 6 (1d6 + 3) piercing damage.' },
+      { name: 'Talons', description: 'Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 10 (2d6 + 3) slashing damage.' }
+    ],
     tags: ['Keen sight', 'Flying']
   },
   {
     name: 'Brown Bear',
     size: 'Large',
     creatureType: 'beast',
+    alignment: 'unaligned',
     armorClass: 11,
+    armorClassNote: 'natural armor',
     hitPoints: 34,
+    hitDice: '5d10 + 15',
     speed: '40 ft., climb 30 ft.',
+    abilities: { str: 19, dex: 10, con: 16, int: 2, wis: 13, cha: 7 },
+    skills: ['Perception +3'],
+    senses: 'passive Perception 13',
+    languages: '—',
     challengeRating: '1',
+    xp: 200,
+    traits: [
+      { name: 'Keen Smell', description: 'The bear has advantage on Wisdom (Perception) checks that rely on smell.' }
+    ],
+    actions: [
+      { name: 'Multiattack', description: 'The bear makes two attacks: one with its bite and one with its claws.' },
+      { name: 'Bite', description: 'Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 8 (1d8 + 4) piercing damage.' },
+      { name: 'Claws', description: 'Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 11 (2d6 + 4) slashing damage.' }
+    ],
     tags: ['Keen smell', 'Multiattack']
   }
 ];
