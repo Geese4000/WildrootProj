@@ -9,6 +9,7 @@ var session = require('express-session');
 
 require('./app_server/models/db');
 const indexRouter = require('./app_server/routes/index');
+const apiRouter = require('./app_server/routes/api');
 
 var app = express();
 
@@ -33,6 +34,7 @@ app.use(session({
   cookie: { maxAge: 1000 * 60 * 60 * 24 } // 1 day
 }));
 
+app.use('/api', apiRouter);
 app.use('/', indexRouter);
 
 // catch 404 and forward to error handler
