@@ -1,6 +1,7 @@
 extends layout
 
 block content
+  - function mod(score) { var m = Math.floor((score - 10) / 2); return (m >= 0 ? '+' : '') + m; }
   .wr-shell
     nav.wr-topnav
       .wr-topnav-left
@@ -40,13 +41,62 @@ block content
           each ws in wildShapes
             .wr-card
               h2= ws.name
-              p.wr-type= ws.size + ' ' + ws.creatureType + (ws.tags && ws.tags.length ? ' · ' + ws.tags.join(', ') : '')
+              p.wr-type= ws.size + ' ' + ws.creatureType + (ws.alignment ? ', ' + ws.alignment : '') + (ws.tags && ws.tags.length ? ' · ' + ws.tags.join(', ') : '')
               .wr-stats
-                span= 'AC ' + ws.armorClass
-                span= 'HP ' + ws.hitPoints
+                span= 'AC ' + ws.armorClass + (ws.armorClassNote ? ' (' + ws.armorClassNote + ')' : '')
+                span= 'HP ' + ws.hitPoints + (ws.hitDice ? ' (' + ws.hitDice + ')' : '')
                 span= 'Speed ' + ws.speed
-                span= 'CR ' + ws.challengeRating
+                span= 'CR ' + ws.challengeRating + (ws.xp ? ' (' + ws.xp + ' XP)' : '')
                 span.sheet-link(title='Creature sheet detail is not implemented yet') Open sheet →
+              if ws.abilities
+                .wr-abilities
+                  each ab in ['str', 'dex', 'con', 'int', 'wis', 'cha']
+                    span.wr-ability
+                      span.wr-ability-label= ab.toUpperCase()
+                      span.wr-ability-score= ws.abilities[ab] + ' (' + mod(ws.abilities[ab]) + ')'
+              if (ws.savingThrows && ws.savingThrows.length) || (ws.skills && ws.skills.length)
+                p.wr-sub-line
+                  if ws.savingThrows && ws.savingThrows.length
+                    strong Saving Throws
+                    |  #{ws.savingThrows.join(', ')}
+                  if ws.skills && ws.skills.length
+                    |  #{ws.savingThrows && ws.savingThrows.length ? ' · ' : ''}
+                    strong Skills
+                    |  #{ws.skills.join(', ')}
+              - var defenses = [];
+              if ws.damageVulnerabilities && ws.damageVulnerabilities.length
+                - defenses.push('Vulnerable: ' + ws.damageVulnerabilities.join(', '))
+              if ws.damageResistances && ws.damageResistances.length
+                - defenses.push('Resist: ' + ws.damageResistances.join(', '))
+              if ws.damageImmunities && ws.damageImmunities.length
+                - defenses.push('Immune: ' + ws.damageImmunities.join(', '))
+              if ws.conditionImmunities && ws.conditionImmunities.length
+                - defenses.push('Condition immune: ' + ws.conditionImmunities.join(', '))
+              if defenses.length
+                p.wr-sub-line= defenses.join(' · ')
+              if ws.senses || ws.languages
+                p.wr-sub-line
+                  if ws.senses
+                    strong Senses
+                    |  #{ws.senses}
+                  if ws.languages
+                    |  #{ws.senses ? ' · ' : ''}
+                    strong Languages
+                    |  #{ws.languages}
+              if ws.traits && ws.traits.length
+                .wr-entries
+                  strong.wr-entries-label Traits
+                  each t in ws.traits
+                    p.wr-entry
+                      strong= t.name + '. '
+                      = t.description
+              if ws.actions && ws.actions.length
+                .wr-entries
+                  strong.wr-entries-label Actions
+                  each a in ws.actions
+                    p.wr-entry
+                      strong= a.name + '. '
+                      = a.description
         .wr-footer
           span= 'Showing ' + wildShapes.length + ' of ' + wildShapes.length + ' creature records'
           span.sync Synced live from MongoDB

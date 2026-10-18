@@ -23,37 +23,123 @@ block content
           div.name= profileName
           div.sub= profileEmail
         a.wr-logout(href='/logout') Log out
-    .wr-content.wr-content--centered
-      .wr-panel.wr-panel--form
-        div
-          p.wr-eyebrow New entry
-          h1 Add a Wild Shape
-        if error
-          p.wr-alert= error
-        form.wr-form(method='POST', action='/archive')
+    .wr-content
+      .wr-heading
+        p.wr-eyebrow New entry
+        h1 Add a Wild Shape
+      if error
+        p.wr-alert= error
+      form.wr-form.wr-form--sheet(method='POST', action='/archive')
+        fieldset.wr-fieldset
+          legend Basics
           .wr-field
             label(for='name') Name
             input#name(type='text', name='name', required)
+          .wr-field-row
+            .wr-field
+              label(for='size') Size
+              input#size(type='text', name='size', placeholder='Large', required)
+            .wr-field
+              label(for='creatureType') Type
+              input#creatureType(type='text', name='creatureType', placeholder='beast', required)
+            .wr-field
+              label(for='alignment') Alignment
+              input#alignment(type='text', name='alignment', placeholder='unaligned')
+
+        fieldset.wr-fieldset
+          legend Combat stats
+          .wr-field-row
+            .wr-field
+              label(for='armorClass') Armor Class
+              input#armorClass(type='number', name='armorClass', min='0', required)
+            .wr-field
+              label(for='armorClassNote') AC note
+              input#armorClassNote(type='text', name='armorClassNote', placeholder='natural armor')
+            .wr-field
+              label(for='hitPoints') Hit Points
+              input#hitPoints(type='number', name='hitPoints', min='0', required)
+            .wr-field
+              label(for='hitDice') Hit dice
+              input#hitDice(type='text', name='hitDice', placeholder='5d10 + 10')
+          .wr-field-row
+            .wr-field
+              label(for='speed') Speed
+              input#speed(type='text', name='speed', placeholder='40 ft., swim 40 ft.', required)
+            .wr-field
+              label(for='challengeRating') Challenge Rating
+              input#challengeRating(type='text', name='challengeRating', placeholder='1', required)
+            .wr-field
+              label(for='xp') XP
+              input#xp(type='number', name='xp', min='0', placeholder='200')
+
+        fieldset.wr-fieldset
+          legend Ability scores
+          .wr-ability-grid
+            .wr-field
+              label(for='str') STR
+              input#str(type='number', name='str', required)
+            .wr-field
+              label(for='dex') DEX
+              input#dex(type='number', name='dex', required)
+            .wr-field
+              label(for='con') CON
+              input#con(type='number', name='con', required)
+            .wr-field
+              label(for='int') INT
+              input#int(type='number', name='int', required)
+            .wr-field
+              label(for='wis') WIS
+              input#wis(type='number', name='wis', required)
+            .wr-field
+              label(for='cha') CHA
+              input#cha(type='number', name='cha', required)
+
+        fieldset.wr-fieldset
+          legend Proficiencies &amp; defenses
+          .wr-field-row
+            .wr-field
+              label(for='savingThrows') Saving throws
+              input#savingThrows(type='text', name='savingThrows', placeholder='Dex +4, Con +5')
+            .wr-field
+              label(for='skills') Skills
+              input#skills(type='text', name='skills', placeholder='Perception +3, Stealth +4')
+          .wr-field-row
+            .wr-field
+              label(for='damageVulnerabilities') Damage vulnerabilities
+              input#damageVulnerabilities(type='text', name='damageVulnerabilities', placeholder='fire')
+            .wr-field
+              label(for='damageResistances') Damage resistances
+              input#damageResistances(type='text', name='damageResistances', placeholder='cold')
+          .wr-field-row
+            .wr-field
+              label(for='damageImmunities') Damage immunities
+              input#damageImmunities(type='text', name='damageImmunities', placeholder='poison')
+            .wr-field
+              label(for='conditionImmunities') Condition immunities
+              input#conditionImmunities(type='text', name='conditionImmunities', placeholder='charmed, frightened')
+
+        fieldset.wr-fieldset
+          legend Senses &amp; languages
+          .wr-field-row
+            .wr-field
+              label(for='senses') Senses
+              input#senses(type='text', name='senses', placeholder='darkvision 60 ft., passive Perception 13')
+            .wr-field
+              label(for='languages') Languages
+              input#languages(type='text', name='languages', placeholder='—')
+
+        fieldset.wr-fieldset
+          legend Traits &amp; actions
+          p.wr-field-hint One per line, as "Name: description".
           .wr-field
-            label(for='size') Size
-            input#size(type='text', name='size', placeholder='Large', required)
+            label(for='traits') Traits
+            textarea#traits(name='traits', rows='3', placeholder='Pack Tactics: Has advantage on an attack roll against a creature if an ally is within 5 ft. of it.')
           .wr-field
-            label(for='creatureType') Type
-            input#creatureType(type='text', name='creatureType', placeholder='beast', required)
+            label(for='actions') Actions
+            textarea#actions(name='actions', rows='3', placeholder='Bite: Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 10 (2d6 + 3) piercing damage.')
           .wr-field
-            label(for='armorClass') Armor Class
-            input#armorClass(type='number', name='armorClass', min='0', required)
-          .wr-field
-            label(for='hitPoints') Hit Points
-            input#hitPoints(type='number', name='hitPoints', min='0', required)
-          .wr-field
-            label(for='speed') Speed
-            input#speed(type='text', name='speed', placeholder='40 ft., swim 40 ft.', required)
-          .wr-field
-            label(for='challengeRating') Challenge Rating
-            input#challengeRating(type='text', name='challengeRating', placeholder='1', required)
-          .wr-field
-            label(for='tags') Traits
+            label(for='tags') Quick tags
             input#tags(type='text', name='tags', placeholder='Pack tactics, Keen hearing (comma-separated)')
-          button.wr-btn(type='submit') Save to archive
-        p.wr-switch #[a(href='/archive') ← Back to archive]
+
+        button.wr-btn(type='submit') Save to archive
+      p.wr-switch #[a(href='/archive') ← Back to archive]
