@@ -84,13 +84,31 @@ const logout = function(req, res) {
   req.session.destroy(() => res.redirect('/login'));
 };
 
+// GET /archive — supports ?tag=<tag> to filter down to Wild Shapes carrying
+// that tag. The filter pills themselves are built from whatever tags the
+// user has actually used, via WildShape.distinct(), so the list is always
+// real data, never a hardcoded guess at categories.
 const archive = async function(req, res) {
   if (!req.session.userId) return res.redirect('/login');
   try {
-    const wildShapes = await WildShape.find({ owner: req.session.userId }).sort({ name: 1 });
+    const owner = req.session.userId;
+    const activeTag = typeof req.query.tag === 'string' && req.query.tag.trim() ? req.query.tag.trim() : null;
+
+    const findConditions = { owner };
+    if (activeTag) findConditions.tags = activeTag;
+
+    const [wildShapes, totalCount, allTags] = await Promise.all([
+      WildShape.find(findConditions).sort({ name: 1 }),
+      WildShape.countDocuments({ owner }),
+      WildShape.distinct('tags', { owner })
+    ]);
+
     res.render('archive', {
       title: 'Wild Shape Archive — Wildroot',
       wildShapes,
+      totalCount,
+      allTags: allTags.sort(),
+      activeTag,
       ...profileLocals(req)
     });
   } catch (err) {
