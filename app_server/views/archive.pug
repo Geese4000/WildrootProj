@@ -30,11 +30,10 @@ block content
         h1 Wild Shape Archive
       .wr-tools
         .wr-filters
-          span.wr-filter.active= 'All forms · ' + wildShapes.length
-          span.wr-filter(aria-disabled='true', title='Filtering is not implemented yet') Favorites
-          span.wr-filter(aria-disabled='true', title='Filtering is not implemented yet') Aquatic
-          span.wr-filter(aria-disabled='true', title='Filtering is not implemented yet') Flying
-          span.wr-filter(aria-disabled='true', title='Filtering is not implemented yet') CR 1 or lower
+          a.wr-filter(class=activeTag ? '' : 'active', href='/archive')= 'All forms · ' + totalCount
+          if allTags && allTags.length
+            each tag in allTags
+              a.wr-filter(class=activeTag === tag ? 'active' : '', href='/archive?tag=' + encodeURIComponent(tag))= tag
         a.wr-btn(href='/archive/new') + Add Wild Shape
       if wildShapes.length
         .wr-grid
@@ -98,9 +97,13 @@ block content
                       strong= a.name + '. '
                       = a.description
         .wr-footer
-          span= 'Showing ' + wildShapes.length + ' of ' + wildShapes.length + ' creature records'
+          span= 'Showing ' + wildShapes.length + ' of ' + totalCount + ' creature records'
           span.sync Synced live from MongoDB
+      else if activeTag
+        .wr-empty
+          p= 'No Wild Shapes tagged "' + activeTag + '".'
+          a.wr-btn(href='/archive') ← Clear filter
       else
         .wr-empty
           p No Wild Shapes saved to your archive yet.
-          a.wr-btn(href='/archive/new') + Add your first Wild Shape
+          a.wr-btn(href='/archive/new') + Add your first Wild Shape Wild Shape
