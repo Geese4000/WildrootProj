@@ -226,8 +226,11 @@ body.wildroot h2 {
   font-size: 13px;
   padding: 9px 14px;
   display: inline-block;
+  text-decoration: none;
+  cursor: pointer;
 }
-.wr-filter.active { background: var(--wr-pill-dark); font-weight: 700; }
+.wr-filter:hover { border-color: var(--wr-primary); }
+.wr-filter.active { background: var(--wr-pill-dark); font-weight: 700; border-color: var(--wr-pill-dark); }
 .wr-filter[aria-disabled="true"] { opacity: 0.6; cursor: default; }
 
 .wr-grid { display: flex; flex-direction: column; gap: 16px; }
