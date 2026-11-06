@@ -1,3 +1,4 @@
+const passport = require('passport');
 const User = require('../models/user');
 const WildShape = require('../models/wildshape');
 
@@ -11,9 +12,9 @@ function initials(name) {
 // Shared locals every logged-in page needs for the top nav / profile badge.
 function profileLocals(req) {
   return {
-    profileName: req.session.username,
-    profileEmail: req.session.email,
-    profileInitials: initials(req.session.username)
+    profileName: req.user.username,
+    profileEmail: req.user.email,
+    profileInitials: initials(req.user.username)
   };
 }
 
@@ -39,39 +40,44 @@ function parseList(text) {
 }
 
 const login = function(req, res) {
-  if (req.session.userId) return res.redirect('/archive');
+  if (req.isAuthenticated()) return res.redirect('/archive');
   res.render('login', { title: 'Log in — Wildroot' });
 };
 
-const postLogin = async function(req, res) {
-  try {
-    const { email, password } = req.body;
-    const user = await User.findOne({ email, password });
+// POST /login — Passport's local strategy checks the email + bcrypt hash.
+// A custom callback is used so a failed login re-renders the form with an
+// error message instead of just redirecting.
+const postLogin = function(req, res, next) {
+  passport.authenticate('local', (err, user, info) => {
+    if (err) return next(err);
     if (!user) {
-      return res.render('login', {
+      return res.status(401).render('login', {
         title: 'Log in — Wildroot',
-        error: 'Email or password is incorrect.'
+        error: info && info.message ? info.message : 'Email or password is incorrect.'
       });
     }
-    req.session.userId = user._id.toString();
-    req.session.username = user.username;
-    req.session.email = user.email;
-    res.redirect('/archive');
-  } catch (err) {
-    res.render('login', { title: 'Log in — Wildroot', error: err.message });
-  }
+    req.login(user, (loginErr) => {
+      if (loginErr) return next(loginErr);
+      res.redirect('/archive');
+    });
+  })(req, res, next);
 };
 
 const register = function(req, res) {
-  if (req.session.userId) return res.redirect('/archive');
+  if (req.isAuthenticated()) return res.redirect('/archive');
   res.render('register', { title: 'Register — Wildroot' });
 };
 
-const postRegister = async function(req, res) {
+// POST /register — the User model hashes the password on save, then the new
+// user is logged straight in with req.login().
+const postRegister = async function(req, res, next) {
   try {
     const { username, email, password } = req.body;
-    await User.create({ username, email, password });
-    res.redirect('/login');
+    const user = await User.create({ username, email, password });
+    req.login(user, (loginErr) => {
+      if (loginErr) return next(loginErr);
+      res.redirect('/archive');
+    });
   } catch (err) {
     const message = err.code === 11000
       ? 'That email is already registered.'
@@ -80,8 +86,15 @@ const postRegister = async function(req, res) {
   }
 };
 
-const logout = function(req, res) {
-  req.session.destroy(() => res.redirect('/login'));
+// GET /logout — end the Passport login, then destroy the whole session
+const logout = function(req, res, next) {
+  req.logout((err) => {
+    if (err) return next(err);
+    req.session.destroy(() => {
+      res.clearCookie('connect.sid');
+      res.redirect('/login');
+    });
+  });
 };
 
 // GET /archive — supports ?tag=<tag> to filter down to Wild Shapes carrying
@@ -89,9 +102,8 @@ const logout = function(req, res) {
 // user has actually used, via WildShape.distinct(), so the list is always
 // real data, never a hardcoded guess at categories.
 const archive = async function(req, res) {
-  if (!req.session.userId) return res.redirect('/login');
   try {
-    const owner = req.session.userId;
+    const owner = req.user._id;
     const activeTag = typeof req.query.tag === 'string' && req.query.tag.trim() ? req.query.tag.trim() : null;
 
     const findConditions = { owner };
@@ -117,7 +129,6 @@ const archive = async function(req, res) {
 };
 
 const newWildShape = function(req, res) {
-  if (!req.session.userId) return res.redirect('/login');
   res.render('add-wild-shape', {
     title: 'Add a Wild Shape — Wildroot',
     error: null,
@@ -126,7 +137,6 @@ const newWildShape = function(req, res) {
 };
 
 const postWildShape = async function(req, res) {
-  if (!req.session.userId) return res.redirect('/login');
   try {
     const b = req.body;
     await WildShape.create({
@@ -168,7 +178,7 @@ const postWildShape = async function(req, res) {
       actions: parseNamedEntries(b.actions),
 
       tags: parseList(b.tags),
-      owner: req.session.userId
+      owner: req.user._id
     });
     res.redirect('/archive');
   } catch (err) {
