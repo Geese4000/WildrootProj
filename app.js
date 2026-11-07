@@ -1,5 +1,10 @@
 require('dotenv').config();
 
+// Refuse to start in production with the fallback (publicly visible) secret
+if (process.env.NODE_ENV === 'production' && !process.env.SESSION_SECRET) {
+  throw new Error('SESSION_SECRET must be set in production');
+}
+
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
@@ -7,6 +12,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var session = require('express-session');
 var passport = require('passport');
+var MongoStore = require('connect-mongo');
 
 require('./app_server/models/db');
 const indexRouter = require('./app_server/routes/index');
@@ -24,13 +30,28 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// express-session stores the session server-side; the browser only holds
-// a signed session id cookie. Passport sits on top of it (below).
+// Render sits in front of the app as a proxy and handles HTTPS for it.
+// Trusting that proxy lets Express see the original protocol, so req.secure
+// and secure cookies work behind it.
+app.set('trust proxy', 1);
+
+// express-session keeps session data on the server (in MongoDB, via
+// connect-mongo); the browser only holds a signed session id cookie.
 app.use(session({
   secret: process.env.SESSION_SECRET || 'wildroot-dev-secret-change-me',
   resave: false,
   saveUninitialized: false,
-  cookie: { maxAge: 1000 * 60 * 60 * 24 } // 1 day
+  store: MongoStore.create({
+    mongoUrl: process.env.MONGODB_URI || 'mongodb://localhost/wildroot',
+    collectionName: 'sessions',
+    ttl: 60 * 60 * 24 // 1 day, in seconds
+  }),
+  cookie: {
+    maxAge: 1000 * 60 * 60 * 24, // 1 day, in milliseconds
+    httpOnly: true,   // browser JavaScript can't read the cookie
+    sameSite: 'lax',  // not sent on cross-site POSTs (basic CSRF protection)
+    secure: 'auto'    // marked HTTPS-only whenever the request came over HTTPS
+  }
 }));
 
 // Passport: local (email + password) strategy, backed by the session above
