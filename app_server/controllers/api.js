@@ -1,21 +1,9 @@
 const WildShape = require('../models/wildshape');
 
-// Shared guard: every /api route needs a logged-in session, same as the
-// Pug-rendered /archive routes — just answered as JSON instead of a redirect.
-// Log in via POST /login first (e.g. in Postman) to get the session cookie.
-function requireSession(req, res) {
-  if (!req.session.userId) {
-    res.status(401).json({ error: 'Not authenticated. POST /login first to get a session cookie.' });
-    return false;
-  }
-  return true;
-}
-
 // GET /api/wildshapes — every Wild Shape owned by the logged-in user.
 const listWildShapes = async function(req, res) {
-  if (!requireSession(req, res)) return;
   try {
-    const wildShapes = await WildShape.find({ owner: req.session.userId }).sort({ name: 1 });
+    const wildShapes = await WildShape.find({ owner: req.user._id }).sort({ name: 1 });
     res.status(200).json(wildShapes);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -24,9 +12,8 @@ const listWildShapes = async function(req, res) {
 
 // GET /api/wildshapes/:id — a single Wild Shape, only if it belongs to the caller.
 const getWildShape = async function(req, res) {
-  if (!requireSession(req, res)) return;
   try {
-    const wildShape = await WildShape.findOne({ _id: req.params.id, owner: req.session.userId });
+    const wildShape = await WildShape.findOne({ _id: req.params.id, owner: req.user._id });
     if (!wildShape) {
       return res.status(404).json({ error: 'No Wild Shape with that id in your archive.' });
     }
@@ -44,8 +31,6 @@ const getWildShape = async function(req, res) {
 //   "abilities": { "str": 17, "dex": 15, "con": 15, "int": 3, "wis": 12, "cha": 7 }
 // }
 const createWildShape = async function(req, res) {
-  if (!requireSession(req, res)) return;
-
   const required = ['name', 'size', 'creatureType', 'armorClass', 'hitPoints', 'speed', 'challengeRating'];
   const missing = required.filter((field) => req.body[field] === undefined || req.body[field] === '');
   if (missing.length) {
@@ -93,7 +78,7 @@ const createWildShape = async function(req, res) {
       traits: Array.isArray(req.body.traits) ? req.body.traits : [],
       actions: Array.isArray(req.body.actions) ? req.body.actions : [],
       tags: Array.isArray(req.body.tags) ? req.body.tags : [],
-      owner: req.session.userId
+      owner: req.user._id
     });
     res.status(201).json(wildShape);
   } catch (err) {
