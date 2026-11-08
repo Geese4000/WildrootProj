@@ -35,6 +35,15 @@ app.use(express.static(path.join(__dirname, 'public')));
 // and secure cookies work behind it.
 app.set('trust proxy', 1);
 
+// HSTS: once a browser has reached the site over HTTPS, tell it to only
+// ever use HTTPS for the next 180 days.
+app.use(function(req, res, next) {
+  if (req.secure) {
+    res.setHeader('Strict-Transport-Security', 'max-age=15552000; includeSubDomains');
+  }
+  next();
+});
+
 // express-session keeps session data on the server (in MongoDB, via
 // connect-mongo); the browser only holds a signed session id cookie.
 app.use(session({

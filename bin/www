@@ -7,6 +7,9 @@
 var app = require('../app');
 var debug = require('debug')('webframeworksproj:server');
 var http = require('http');
+var https = require('https');
+var fs = require('fs');
+var path = require('path');
 
 /**
  * Get port from environment and store in Express.
@@ -16,10 +19,26 @@ var port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
 /**
- * Create HTTP server.
+ * Create the server.
+ * Locally: HTTPS with the self-signed certificate in /certs.
+ * On Render: plain HTTP inside Render's network. Render terminates TLS with
+ * its own managed certificate and forwards requests to the app.
  */
 
-var server = http.createServer(app);
+var keyPath = path.join(__dirname, '..', 'certs', 'key.pem');
+var certPath = path.join(__dirname, '..', 'certs', 'cert.pem');
+var server;
+
+if (fs.existsSync(keyPath) && fs.existsSync(certPath)) {
+  server = https.createServer({
+    key: fs.readFileSync(keyPath),
+    cert: fs.readFileSync(certPath)
+  }, app);
+  console.log('Wildroot running on https://localhost:' + port);
+} else {
+  server = http.createServer(app);
+  console.log('No SSL certificate found, serving HTTP on port ' + port + ' (TLS handled by the host)');
+}
 
 /**
  * Listen on provided port, on all network interfaces.
