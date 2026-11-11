@@ -86,4 +86,91 @@ const createWildShape = async function(req, res) {
   }
 };
 
-module.exports = { listWildShapes, getWildShape, createWildShape };
+// Fields a client is allowed to change with PUT. owner is left out on
+// purpose, so a Wild Shape can never be moved into someone else's archive.
+const UPDATABLE_FIELDS = [
+  'name', 'size', 'creatureType', 'alignment',
+  'armorClass', 'armorClassNote', 'hitPoints', 'hitDice', 'speed',
+  'abilities', 'savingThrows', 'skills',
+  'damageVulnerabilities', 'damageResistances', 'damageImmunities', 'conditionImmunities',
+  'senses', 'languages', 'challengeRating', 'xp',
+  'traits', 'actions', 'tags'
+];
+const NUMBER_FIELDS = ['armorClass', 'hitPoints', 'xp'];
+const LIST_FIELDS = [
+  'savingThrows', 'skills', 'damageVulnerabilities', 'damageResistances',
+  'damageImmunities', 'conditionImmunities', 'traits', 'actions', 'tags'
+];
+const ABILITY_KEYS = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
+
+// PUT /api/wildshapes/:id — update only the fields sent in the JSON body.
+// Example body: { "hitPoints": 40, "tags": ["pack", "tracker"] }
+const updateWildShape = async function(req, res) {
+  // Copy across just the allowed fields that were actually sent
+  const updates = {};
+  UPDATABLE_FIELDS.forEach((field) => {
+    if (req.body[field] !== undefined) updates[field] = req.body[field];
+  });
+  if (!Object.keys(updates).length) {
+    return res.status(400).json({ error: 'Send at least one field to update.' });
+  }
+
+  for (const field of NUMBER_FIELDS) {
+    if (updates[field] === undefined) continue;
+    if (Number.isNaN(Number(updates[field]))) {
+      return res.status(400).json({ error: `${field} must be a number.` });
+    }
+    updates[field] = Number(updates[field]);
+  }
+
+  for (const field of LIST_FIELDS) {
+    if (updates[field] !== undefined && !Array.isArray(updates[field])) {
+      return res.status(400).json({ error: `${field} must be an array.` });
+    }
+  }
+
+  // The ability scores are replaced as one block, so all six are needed
+  if (updates.abilities !== undefined) {
+    const a = updates.abilities || {};
+    if (ABILITY_KEYS.some((k) => Number.isNaN(Number(a[k])))) {
+      return res.status(400).json({ error: `abilities must include numeric: ${ABILITY_KEYS.join(', ')}` });
+    }
+    updates.abilities = {};
+    ABILITY_KEYS.forEach((k) => { updates.abilities[k] = Number(a[k]); });
+  }
+
+  try {
+    // Matching on owner as well as _id means users can only edit their own.
+    // runValidators re-checks the schema rules (e.g. required fields) on update.
+    const wildShape = await WildShape.findOneAndUpdate(
+      { _id: req.params.id, owner: req.user._id },
+      { $set: updates },
+      { new: true, runValidators: true }
+    );
+    if (!wildShape) {
+      return res.status(404).json({ error: 'No Wild Shape with that id in your archive.' });
+    }
+    res.status(200).json(wildShape);
+  } catch (err) {
+    // A badly formed id is a "not found", anything else is bad input
+    if (err.name === 'CastError' && err.path === '_id') {
+      return res.status(404).json({ error: 'No Wild Shape with that id in your archive.' });
+    }
+    res.status(400).json({ error: err.message });
+  }
+};
+
+// DELETE /api/wildshapes/:id — remove one Wild Shape from the caller's archive.
+const deleteWildShape = async function(req, res) {
+  try {
+    const wildShape = await WildShape.findOneAndDelete({ _id: req.params.id, owner: req.user._id });
+    if (!wildShape) {
+      return res.status(404).json({ error: 'No Wild Shape with that id in your archive.' });
+    }
+    res.status(200).json({ message: `Deleted ${wildShape.name}.`, id: wildShape._id });
+  } catch (err) {
+    res.status(404).json({ error: 'No Wild Shape with that id in your archive.' });
+  }
+};
+
+module.exports = { listWildShapes, getWildShape, createWildShape, updateWildShape, deleteWildShape };
