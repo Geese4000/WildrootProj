@@ -47,6 +47,7 @@ block content
                 span= 'Speed ' + ws.speed
                 span= 'CR ' + ws.challengeRating + (ws.xp ? ' (' + ws.xp + ' XP)' : '')
                 span.sheet-link(title='Creature sheet detail is not implemented yet') Open sheet →
+                button.wr-delete(type='button', data-id=String(ws._id), data-name=ws.name) Delete
               if ws.abilities
                 .wr-abilities
                   each ab in ['str', 'dex', 'con', 'int', 'wis', 'cha']
@@ -106,4 +107,5 @@ block content
       else
         .wr-empty
           p No Wild Shapes saved to your archive yet.
-          a.wr-btn(href='/archive/new') + Add your first Wild Shape Wild Shape
+          a.wr-btn(href='/archive/new') + Add your first Wild Shape
+    script(src='/javascripts/archive.js')

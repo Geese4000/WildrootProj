@@ -350,3 +350,18 @@ body.wildroot h2 {
   .wr-grove h1, .wr-welcome h1 { font-size: 28px; }
   .wr-ability-grid { grid-template-columns: repeat(3, 1fr); }
 }
+
+/* Delete button on the archive cards: sits at the right end of the stats row */
+.wr-card .wr-delete {
+  margin-left: auto;
+  background: none;
+  border: 1px solid #b4533c;
+  color: #b4533c;
+  border-radius: 999px;
+  padding: 2px 12px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.wr-card .wr-delete:hover { background: #b4533c; color: #fff; }
+.wr-card .wr-delete:disabled { opacity: 0.5; cursor: default; }
