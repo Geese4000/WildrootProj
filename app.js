@@ -13,6 +13,7 @@ var logger = require('morgan');
 var session = require('express-session');
 var passport = require('passport');
 var MongoStore = require('connect-mongo');
+const { ensureAuthenticated } = require('./app_server/config/auth');
 
 require('./app_server/models/db');
 const indexRouter = require('./app_server/routes/index');
@@ -67,6 +68,11 @@ app.use(session({
 require('./app_server/config/passport')(passport);
 app.use(passport.initialize());
 app.use(passport.session());
+
+// Angular Data screen: the built Angular app (client-dist) is served at /app
+// by this same Express server, so it shares the port and the login session.
+// ensureAuthenticated runs first, so logged-out visitors go to /login.
+app.use('/app', ensureAuthenticated, express.static(path.join(__dirname, 'client-dist')));
 
 app.use('/api', apiRouter);
 app.use('/', indexRouter);
