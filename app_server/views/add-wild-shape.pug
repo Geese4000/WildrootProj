@@ -43,9 +43,6 @@ block content
             .wr-field
               label(for='creatureType') Type
               input#creatureType(type='text', name='creatureType', placeholder='beast', required)
-            .wr-field
-              label(for='alignment') Alignment
-              input#alignment(type='text', name='alignment', placeholder='unaligned')
 
         fieldset.wr-fieldset
           legend Combat stats
@@ -69,9 +66,6 @@ block content
             .wr-field
               label(for='challengeRating') Challenge Rating
               input#challengeRating(type='text', name='challengeRating', placeholder='1', required)
-            .wr-field
-              label(for='xp') XP
-              input#xp(type='number', name='xp', min='0', placeholder='200')
 
         fieldset.wr-fieldset
           legend Ability scores
@@ -120,14 +114,11 @@ block content
               input#conditionImmunities(type='text', name='conditionImmunities', placeholder='charmed, frightened')
 
         fieldset.wr-fieldset
-          legend Senses &amp; languages
+          legend Senses
           .wr-field-row
             .wr-field
               label(for='senses') Senses
               input#senses(type='text', name='senses', placeholder='darkvision 60 ft., passive Perception 13')
-            .wr-field
-              label(for='languages') Languages
-              input#languages(type='text', name='languages', placeholder='—')
 
         fieldset.wr-fieldset
           legend Traits &amp; actions

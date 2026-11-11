@@ -41,12 +41,12 @@ block content
           each ws in wildShapes
             .wr-card
               h2= ws.name
-              p.wr-type= ws.size + ' ' + ws.creatureType + (ws.alignment ? ', ' + ws.alignment : '') + (ws.tags && ws.tags.length ? ' · ' + ws.tags.join(', ') : '')
+              p.wr-type= ws.size + ' ' + ws.creatureType + (ws.tags && ws.tags.length ? ' · ' + ws.tags.join(', ') : '')
               .wr-stats
                 span= 'AC ' + ws.armorClass + (ws.armorClassNote ? ' (' + ws.armorClassNote + ')' : '')
                 span= 'HP ' + ws.hitPoints + (ws.hitDice ? ' (' + ws.hitDice + ')' : '')
                 span= 'Speed ' + ws.speed
-                span= 'CR ' + ws.challengeRating + (ws.xp ? ' (' + ws.xp + ' XP)' : '')
+                span= 'CR ' + ws.challengeRating
                 span.sheet-link(title='Creature sheet detail is not implemented yet') Open sheet →
                 button.wr-delete(type='button', data-id=String(ws._id), data-name=ws.name) Delete
               if ws.abilities
@@ -75,15 +75,10 @@ block content
                 - defenses.push('Condition immune: ' + ws.conditionImmunities.join(', '))
               if defenses.length
                 p.wr-sub-line= defenses.join(' · ')
-              if ws.senses || ws.languages
+              if ws.senses
                 p.wr-sub-line
-                  if ws.senses
-                    strong Senses
-                    |  #{ws.senses}
-                  if ws.languages
-                    |  #{ws.senses ? ' · ' : ''}
-                    strong Languages
-                    |  #{ws.languages}
+                  strong Senses
+                  |  #{ws.senses}
               if ws.traits && ws.traits.length
                 .wr-entries
                   strong.wr-entries-label Traits

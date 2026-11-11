@@ -51,7 +51,6 @@ const createWildShape = async function(req, res) {
       name: req.body.name,
       size: req.body.size,
       creatureType: req.body.creatureType,
-      alignment: req.body.alignment,
       armorClass: Number(req.body.armorClass),
       armorClassNote: req.body.armorClassNote,
       hitPoints: Number(req.body.hitPoints),
@@ -72,9 +71,7 @@ const createWildShape = async function(req, res) {
       damageImmunities: Array.isArray(req.body.damageImmunities) ? req.body.damageImmunities : [],
       conditionImmunities: Array.isArray(req.body.conditionImmunities) ? req.body.conditionImmunities : [],
       senses: req.body.senses,
-      languages: req.body.languages,
       challengeRating: req.body.challengeRating,
-      xp: req.body.xp !== undefined ? Number(req.body.xp) : undefined,
       traits: Array.isArray(req.body.traits) ? req.body.traits : [],
       actions: Array.isArray(req.body.actions) ? req.body.actions : [],
       tags: Array.isArray(req.body.tags) ? req.body.tags : [],
@@ -89,14 +86,14 @@ const createWildShape = async function(req, res) {
 // Fields a client is allowed to change with PUT. owner is left out on
 // purpose, so a Wild Shape can never be moved into someone else's archive.
 const UPDATABLE_FIELDS = [
-  'name', 'size', 'creatureType', 'alignment',
+  'name', 'size', 'creatureType',
   'armorClass', 'armorClassNote', 'hitPoints', 'hitDice', 'speed',
   'abilities', 'savingThrows', 'skills',
   'damageVulnerabilities', 'damageResistances', 'damageImmunities', 'conditionImmunities',
-  'senses', 'languages', 'challengeRating', 'xp',
+  'senses', 'challengeRating',
   'traits', 'actions', 'tags'
 ];
-const NUMBER_FIELDS = ['armorClass', 'hitPoints', 'xp'];
+const NUMBER_FIELDS = ['armorClass', 'hitPoints'];
 const LIST_FIELDS = [
   'savingThrows', 'skills', 'damageVulnerabilities', 'damageResistances',
   'damageImmunities', 'conditionImmunities', 'traits', 'actions', 'tags'

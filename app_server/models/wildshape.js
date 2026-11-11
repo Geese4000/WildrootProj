@@ -26,7 +26,6 @@ const wildShapeSchema = new mongoose.Schema({
   name: { type: String, required: true },
   size: { type: String, required: true },
   creatureType: { type: String, required: true },
-  alignment: { type: String },
 
   armorClass: { type: Number, required: true },
   armorClassNote: { type: String },  // e.g. "natural armor"
@@ -45,10 +44,8 @@ const wildShapeSchema = new mongoose.Schema({
   conditionImmunities: [String],
 
   senses: { type: String },           // e.g. "passive Perception 13"
-  languages: { type: String },        // e.g. "—"
 
   challengeRating: { type: String, required: true },
-  xp: { type: Number },
 
   traits: [namedEntry],               // named traits, e.g. Keen Hearing
   actions: [namedEntry],              // attacks, e.g. Bite, Multiattack

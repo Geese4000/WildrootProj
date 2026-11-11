@@ -20,7 +20,7 @@
       @for (ws of filtered(); track ws._id) {
         <article class="card">
           <h2>{{ ws.name }}</h2>
-          <p class="type">{{ ws.size }} {{ ws.creatureType }}{{ ws.alignment ? ', ' + ws.alignment : '' }}</p>
+          <p class="type">{{ ws.size }} {{ ws.creatureType }}</p>
 
           <div class="stats">
             <span>AC {{ ws.armorClass }}</span>

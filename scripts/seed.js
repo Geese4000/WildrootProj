@@ -18,7 +18,6 @@ const wildShapes = [
     name: 'Dire Wolf',
     size: 'Large',
     creatureType: 'beast',
-    alignment: 'unaligned',
     armorClass: 14,
     armorClassNote: 'natural armor',
     hitPoints: 37,
@@ -27,9 +26,7 @@ const wildShapes = [
     abilities: { str: 17, dex: 15, con: 15, int: 3, wis: 12, cha: 7 },
     skills: ['Perception +3', 'Stealth +4'],
     senses: 'passive Perception 13',
-    languages: '—',
     challengeRating: '1',
-    xp: 200,
     traits: [
       { name: 'Keen Hearing and Smell', description: 'The wolf has advantage on Wisdom (Perception) checks that rely on hearing or smell.' },
       { name: 'Pack Tactics', description: "The wolf has advantage on an attack roll against a creature if at least one of the wolf's allies is within 5 feet of the creature and the ally isn't incapacitated." }
@@ -43,7 +40,6 @@ const wildShapes = [
     name: 'Giant Eagle',
     size: 'Large',
     creatureType: 'beast',
-    alignment: 'neutral good',
     armorClass: 13,
     hitPoints: 26,
     hitDice: '4d10 + 4',
@@ -51,9 +47,7 @@ const wildShapes = [
     abilities: { str: 16, dex: 17, con: 13, int: 8, wis: 14, cha: 10 },
     skills: ['Perception +6'],
     senses: 'passive Perception 16',
-    languages: 'Giant Eagle, understands Common and Auran but can’t speak them',
     challengeRating: '1',
-    xp: 200,
     traits: [
       { name: 'Keen Sight', description: 'The eagle has advantage on Wisdom (Perception) checks that rely on sight.' }
     ],
@@ -68,7 +62,6 @@ const wildShapes = [
     name: 'Brown Bear',
     size: 'Large',
     creatureType: 'beast',
-    alignment: 'unaligned',
     armorClass: 11,
     armorClassNote: 'natural armor',
     hitPoints: 34,
@@ -77,9 +70,7 @@ const wildShapes = [
     abilities: { str: 19, dex: 10, con: 16, int: 2, wis: 13, cha: 7 },
     skills: ['Perception +3'],
     senses: 'passive Perception 13',
-    languages: '—',
     challengeRating: '1',
-    xp: 200,
     traits: [
       { name: 'Keen Smell', description: 'The bear has advantage on Wisdom (Perception) checks that rely on smell.' }
     ],

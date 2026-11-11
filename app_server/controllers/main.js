@@ -143,7 +143,6 @@ const postWildShape = async function(req, res) {
       name: b.name,
       size: b.size,
       creatureType: b.creatureType,
-      alignment: b.alignment || undefined,
 
       armorClass: Number(b.armorClass),
       armorClassNote: b.armorClassNote || undefined,
@@ -169,10 +168,8 @@ const postWildShape = async function(req, res) {
       conditionImmunities: parseList(b.conditionImmunities),
 
       senses: b.senses || undefined,
-      languages: b.languages || undefined,
 
       challengeRating: b.challengeRating,
-      xp: b.xp ? Number(b.xp) : undefined,
 
       traits: parseNamedEntries(b.traits),
       actions: parseNamedEntries(b.actions),
