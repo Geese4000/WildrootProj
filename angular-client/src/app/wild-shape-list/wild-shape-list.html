@@ -1,0 +1,60 @@
+<main class="data-screen">
+  <header class="data-header">
+    <div>
+      <p class="eyebrow">Angular data view</p>
+      <h1>Wild Shape Data</h1>
+    </div>
+    <a class="back-link" href="/archive">← Back to archive</a>
+  </header>
+
+  <input class="search" type="search" placeholder="Search by name, type or tag" (input)="onSearch($event)" />
+
+  @if (loading()) {
+    <p class="status">Loading your Wild Shapes…</p>
+  } @else if (error()) {
+    <p class="status status--error">{{ error() }} <a href="/login">Log in</a></p>
+  } @else {
+    <p class="status">Showing {{ filtered().length }} of {{ wildShapes().length }} Wild Shapes</p>
+
+    <div class="grid">
+      @for (ws of filtered(); track ws._id) {
+        <article class="card">
+          <h2>{{ ws.name }}</h2>
+          <p class="type">{{ ws.size }} {{ ws.creatureType }}{{ ws.alignment ? ', ' + ws.alignment : '' }}</p>
+
+          <div class="stats">
+            <span>AC {{ ws.armorClass }}</span>
+            <span>HP {{ ws.hitPoints }}</span>
+            <span>Speed {{ ws.speed }}</span>
+            <span>CR {{ ws.challengeRating }}</span>
+          </div>
+
+          @if (ws.abilities) {
+            <div class="abilities">
+              @for (key of abilityKeys; track key) {
+                <div class="ability">
+                  <span class="label">{{ key.toUpperCase() }}</span>
+                  <span>{{ ws.abilities[key] }} ({{ modifier(ws.abilities[key]) }})</span>
+                </div>
+              }
+            </div>
+          }
+
+          @if (ws.tags.length) {
+            <div class="tags">
+              @for (tag of ws.tags; track tag) {
+                <span class="tag">{{ tag }}</span>
+              }
+            </div>
+          }
+        </article>
+      } @empty {
+        @if (search()) {
+          <p class="status">No Wild Shapes match "{{ search() }}".</p>
+        } @else {
+          <p class="status">No Wild Shapes yet. <a href="/archive/new">Add one</a></p>
+        }
+      }
+    </div>
+  }
+</main>

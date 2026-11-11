@@ -1,11 +1,10 @@
-import { Component, signal } from '@angular/core';
+import { Component } from '@angular/core';
+import { WildShapeList } from './wild-shape-list/wild-shape-list';
 
+// Root component: the Data screen is the whole Angular app
 @Component({
-  imports: [],
   selector: 'app-root',
-  styleUrl: './app.css',
-  templateUrl: './app.html',
+  imports: [WildShapeList],
+  template: '<app-wild-shape-list />'
 })
-export class App {
-  protected readonly title = signal('angular-client');
-}
+export class App {}
